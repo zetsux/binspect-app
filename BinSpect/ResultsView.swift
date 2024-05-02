@@ -16,6 +16,7 @@ struct ResultsView: View {
     @State var type: String = "Loading..."
     @State var confidence: Double = 0.0
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) var modelContext
     
     var body: some View {
         NavigationStack {
@@ -34,14 +35,14 @@ struct ResultsView: View {
                             Text(type)
                         }
                         .fontWeight(.bold)
-                        .foregroundStyle(type == "Organic" ? .green : (type == "Inorganic" ? .blue : .gray))
+                        .foregroundStyle(type == "Organic" ? Color(UIColor.systemGreen) : (type == "Inorganic" ? Color(UIColor.systemBlue) : Color(UIColor.systemGray)))
                         .font(.largeTitle)
                         
-                        Text("Confidence: \(confidence)%")
+                        Text("Confidence: \(confidence, format: .number.precision(.fractionLength(2)))%")
                             .font(.footnote)
                             .padding(.bottom, 12)
                         
-                        Text("It’s your 15th \(type.lowercased()) trash!")
+                        Text("It’s a \(type.lowercased()) trash!")
                             .font(.callout)
                             .padding(.bottom, 24)
                     }
@@ -50,8 +51,12 @@ struct ResultsView: View {
                 }
                 
                 HStack {
-                    NavigationLink {
-                        CameraView()
+                    Button {
+                        if let imgData = image.heicData() {
+                            let finalRes = History(image: imgData, type: self.type, confidence: self.confidence)
+                            modelContext.insert(finalRes)
+                        }
+                        dismiss()
                     } label: {
                         HStack{
                             Image(systemName: "square.and.arrow.down")
@@ -79,7 +84,7 @@ struct ResultsView: View {
                         .buttonStyle(.bordered)
                         .clipShape(RoundedRectangle(cornerRadius: 40.0))
                 }
-                .tint(.mint)
+                .tint(Color(UIColor.systemTeal))
                 .frame(width: 296)
             }
             .navigationTitle("Results")

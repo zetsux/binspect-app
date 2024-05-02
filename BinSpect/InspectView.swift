@@ -31,7 +31,7 @@ struct InspectView: View {
                 
                 Text("Give us an image of your trash and we will categorize it as organic or recyclable.")
                     .padding(.horizontal, 92)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(Color(UIColor.systemGray))
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 36)
                     .font(.callout)
@@ -48,7 +48,7 @@ struct InspectView: View {
                         .padding(.vertical, 12)
                 }
                     .buttonStyle(.borderedProminent)
-                    .tint(.mint)
+                    .tint(Color(UIColor.systemTeal))
                     .confirmationDialog("Select Image Source", isPresented: $showDialog, titleVisibility: .visible) {
                         Button("Take from Camera") {
                             showCamera.toggle()

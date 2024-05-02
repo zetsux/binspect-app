@@ -15,11 +15,11 @@ struct NavigationView: View {
                     Label("Inspect", systemImage: "magnifyingglass")
                 }
 
-            ImagePickView()
+            HistoryView()
                 .tabItem {
                     Label("History", systemImage: "clock")
                 }
-        }.tint(.mint)
+        }.tint(Color(UIColor.systemTeal))
     }
 }
 
