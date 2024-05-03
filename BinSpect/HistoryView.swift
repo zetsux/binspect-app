@@ -10,6 +10,7 @@ import SwiftData
 
 struct HistoryView: View {
     @Query var histories: [History]
+    @State private var isShowingAlert = false
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -52,7 +53,7 @@ struct HistoryView: View {
                             }
                                 .padding(.bottom, 16)
                                 .background(Color(UIColor.systemBackground))
-                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
                         }
                     }
                         .padding(.vertical, 4)
@@ -79,7 +80,7 @@ struct HistoryView: View {
         }
     }()
     
-    for i in (1...10) {
+    for _ in (1...10) {
         if let uiImg = UIImage(systemName: "globe"), let imgData = uiImg.heicData() {
             sharedModelContainer.mainContext.insert(History(image: imgData))
         }

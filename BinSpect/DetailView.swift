@@ -9,6 +9,9 @@ import SwiftUI
 
 struct DetailView: View {
     var history: History
+    @State private var isShowingAlert = false
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
@@ -51,6 +54,22 @@ struct DetailView: View {
             }
             .navigationTitle("Detail")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button("Delete") {
+                    isShowingAlert = true
+                }.foregroundStyle(Color(UIColor.systemRed))
+                
+                .alert("Are you sure to delete this from your history?", isPresented: $isShowingAlert) {
+                        Button("Delete", role: .destructive) {
+                            withAnimation {
+                                modelContext.delete(history)
+                                dismiss()
+                            }
+                        }
+                } message: {
+                    Text("This action is irreversible.")
+                }
+            }
         }
     }
 }
