@@ -1,35 +1,11 @@
 //
-//  File.swift
+//  CameraViewModel.swift
 //  BinSpect
 //
 //  Created by Kevin Nathanael Halim on 29/04/24.
 //
 
 import SwiftUI
- 
-struct CameraView: View {
-    @State private var showCamera = false
-    @State private var selectedImage: UIImage?
-    @State private var hasImage = false
-    @State var image: UIImage?
-    var body: some View {
-        VStack {
-            if let selectedImage{
-                Image(uiImage: selectedImage)
-                    .resizable()
-                    .scaledToFit()
-            }
-            
-            Button("Open camera") {
-                self.showCamera.toggle()
-            }
-            .fullScreenCover(isPresented: self.$showCamera) {
-                accessCameraView(selectedImage: self.$selectedImage, hasImage: self.$hasImage)
-            }
-        }
-    }
-}
-
 
 struct accessCameraView: UIViewControllerRepresentable {
     
@@ -69,8 +45,3 @@ class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerContro
         self.picker.isPresented.wrappedValue.dismiss()
     }
 }
-
-#Preview {
-    CameraView()
-}
-    
