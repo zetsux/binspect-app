@@ -29,7 +29,7 @@ struct InspectView: View {
                     .padding(.bottom, 16)
                     .padding(.horizontal, 84)
                 
-                Text("Give us an image of your trash and we will categorize it as organic or recyclable.")
+                Text("Give us an image of your trash and we will categorize it as organic or inorganic.")
                     .padding(.horizontal, 92)
                     .foregroundStyle(Color(UIColor.systemGray))
                     .multilineTextAlignment(.center)
