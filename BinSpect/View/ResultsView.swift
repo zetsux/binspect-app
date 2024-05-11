@@ -21,12 +21,15 @@ struct ResultsView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                Spacer()
+                
                 Image(uiImage: image)
                     .resizable()
-                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                    .frame(width: 280, height: 382)
+                    .scaledToFit()
+                    .frame(width: 280)
                     .clipShape(RoundedRectangle(cornerRadius: 24.0))
-                    .padding(.bottom, 24)
+                
+                Spacer()
                 
                 HStack {
                     VStack (alignment: .leading) {
@@ -84,45 +87,47 @@ struct ResultsView: View {
                         .buttonStyle(.bordered)
                         .clipShape(RoundedRectangle(cornerRadius: 40.0))
                 }
-                .tint(Color(UIColor.systemTeal))
-                .frame(width: 296)
+                    .tint(Color(UIColor.systemTeal))
+                    .frame(width: 296)
+                
+                Spacer()
             }
-            .navigationTitle("Results")
-            .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("Results")
+                .navigationBarTitleDisplayMode(.inline)
         }
-        .task {
-            if request == nil {
-                if let visionModel = try? VNCoreMLModel(for: trashClassifier.model) {
-                    request = VNCoreMLRequest(model: visionModel) { request, error in
-                        if let results = request.results
-                            as? [VNClassificationObservation] {
-                            if results.isEmpty {
-                                self.type = "Nothing found.."
+            .task {
+                if request == nil {
+                    if let visionModel = try? VNCoreMLModel(for: trashClassifier.model) {
+                        request = VNCoreMLRequest(model: visionModel) { request, error in
+                            if let results = request.results
+                                as? [VNClassificationObservation] {
+                                if results.isEmpty {
+                                    self.type = "Nothing found.."
+                                } else {
+                                    self.type = results[0].identifier == "B" ? "Organic" : "Inorganic"
+                                    self.confidence = Double(results[0].confidence * 100)
+                                }
+                            } else if let error = error {
+                                self.type = "Failed"
+                                print("error: \(error.localizedDescription)")
                             } else {
-                                self.type = results[0].identifier == "B" ? "Organic" : "Inorganic"
-                                self.confidence = Double(results[0].confidence * 100)
+                                self.type = "???"
                             }
-                        } else if let error = error {
-                            self.type = "Failed"
-                            print("error: \(error.localizedDescription)")
-                        } else {
-                            self.type = "???"
                         }
+                        request?.imageCropAndScaleOption = .scaleFill
                     }
-                    request?.imageCropAndScaleOption = .scaleFill
+                }
+                
+                guard let ciImage = CIImage(image: image) else {
+                    print("Unable to create CIImage")
+                    return
+                }
+                
+                if let request {
+                    let handler = VNImageRequestHandler(ciImage: ciImage)
+                    try? handler.perform([request])
                 }
             }
-            
-            guard let ciImage = CIImage(image: image) else {
-                print("Unable to create CIImage")
-                return
-            }
-            
-            if let request {
-                let handler = VNImageRequestHandler(ciImage: ciImage)
-                try? handler.perform([request])
-            }
-        }
     }
 }
 

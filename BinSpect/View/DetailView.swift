@@ -16,14 +16,16 @@ struct DetailView: View {
     var body: some View {
         NavigationStack {
             VStack {
+                Spacer()
                 if let uiImg = UIImage(data: history.image) {
                     Image(uiImage: uiImg)
                         .resizable()
-                        .scaledToFill()
-                        .frame(width: 280, height: 382)
+                        .scaledToFit()
+                        .frame(width: 280)
                         .clipShape(RoundedRectangle(cornerRadius: 24.0))
-                        .padding(.bottom, 24)
                 }
+                
+                Spacer()
                 
                 HStack {
                     VStack (alignment: .leading) {
@@ -51,6 +53,8 @@ struct DetailView: View {
                     .padding(.leading, 56)
                     Spacer()
                 }
+                
+                Spacer()
             }
             .navigationTitle("Detail")
             .navigationBarTitleDisplayMode(.inline)
