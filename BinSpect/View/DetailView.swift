@@ -15,46 +15,48 @@ struct DetailView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                Spacer()
-                if let uiImg = UIImage(data: history.image) {
-                    Image(uiImage: uiImg)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 280)
-                        .clipShape(RoundedRectangle(cornerRadius: 24.0))
-                }
-                
-                Spacer()
-                
-                HStack {
-                    VStack (alignment: .leading) {
-                        Section {
-                            Image(systemName: history.type == "Organic" ? "leaf.fill" : "arrow.3.trianglepath")
-                            Text(history.type)
-                        }
-                        .fontWeight(.bold)
-                        .foregroundStyle(history.type == "Organic" ? Color(UIColor.systemGreen) : (history.type == "Inorganic" ? Color(UIColor.systemBlue) : Color(UIColor.systemGray)))
-                        .font(.largeTitle)
-                        
-                        Text("Confidence: \(history.confidence, format: .number.precision(.fractionLength(2)))%")
-                            .font(.subheadline)
-                            .padding(.bottom, 12)
-                        
-                        Text("It’s a \(history.type.lowercased()) trash!")
-                            .font(.callout)
-                            .padding(.bottom, 24)
-                        
-                        Text(history.timestamp.formatted(date: .long, time: .shortened))
-                            .font(.footnote)
-                            .padding(.bottom, 24)
-                            .foregroundStyle(Color(UIColor.systemGray))
+            GeometryReader { metrics in
+                VStack {
+                    Spacer()
+                    if let uiImg = UIImage(data: history.image) {
+                        Image(uiImage: uiImg)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: metrics.size.width * 0.71)
+                            .clipShape(RoundedRectangle(cornerRadius: 24.0))
                     }
-                    .padding(.leading, 56)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        VStack (alignment: .leading) {
+                            Section {
+                                Image(systemName: history.type == "Organic" ? "leaf.fill" : "arrow.3.trianglepath")
+                                Text(history.type)
+                            }
+                            .fontWeight(.bold)
+                            .foregroundStyle(history.type == "Organic" ? Color(UIColor.systemGreen) : (history.type == "Inorganic" ? Color(UIColor.systemBlue) : Color(UIColor.systemGray)))
+                            .font(.largeTitle)
+                            
+                            Text("Confidence: \(history.confidence, format: .number.precision(.fractionLength(2)))%")
+                                .font(.subheadline)
+                                .padding(.bottom, 12)
+                            
+                            Text("It’s a \(history.type.lowercased()) trash!")
+                                .font(.callout)
+                                .padding(.bottom, 24)
+                            
+                            Text(history.timestamp.formatted(date: .long, time: .shortened))
+                                .font(.footnote)
+                                .padding(.bottom, 24)
+                                .foregroundStyle(Color(UIColor.systemGray))
+                        }
+                        .padding(.leading, 56)
+                        Spacer()
+                    }
+                    
                     Spacer()
                 }
-                
-                Spacer()
             }
             .navigationTitle("Detail")
             .navigationBarTitleDisplayMode(.inline)
@@ -65,10 +67,8 @@ struct DetailView: View {
                 
                 .alert("Are you sure to delete this from your history?", isPresented: $isShowingAlert) {
                         Button("Delete", role: .destructive) {
-                            withAnimation {
-                                modelContext.delete(history)
-                                dismiss()
-                            }
+                            modelContext.delete(history)
+                            dismiss()
                         }
                 } message: {
                     Text("This action is irreversible.")

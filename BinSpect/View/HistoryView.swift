@@ -15,48 +15,50 @@ struct HistoryView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                    ForEach(histories) { history in
-                        NavigationLink {
-                            DetailView(history: history)
-                        } label: {
-                            VStack(alignment: .leading) {
-                                if let uiImg = UIImage(data: history.image) {
-                                    Image(uiImage: uiImg)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width:172, height:172)
-                                        .clipped()
-                                        .padding(.bottom, 8)
-                                }
-                                
-                                Section {
-                                    Section {
-                                        Image(systemName: history.type == "Organic" ? "leaf.fill" : (history.type == "Inorganic" ? "arrow.3.trianglepath" : "questionmark.app.fill") )
-                                        Text(history.type)
+            GeometryReader { metrics in
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                        ForEach(histories) { history in
+                            NavigationLink {
+                                DetailView(history: history)
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    if let uiImg = UIImage(data: history.image) {
+                                        Image(uiImage: uiImg)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width:metrics.size.width * 0.47, height:metrics.size.width * 0.47)
+                                            .clipped()
+                                            .padding(.bottom, 8)
                                     }
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                        .foregroundStyle(history.type == "Organic" ? Color(UIColor.systemGreen) : (history.type == "Inorganic" ? Color(UIColor.systemBlue) : Color(UIColor.systemGray)))
-
-                                    Text("Confidence: \(history.confidence, format: .number.precision(.fractionLength(2)))%")
-                                        .font(.footnote)
-                                        .padding(.bottom, 12)
-                                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                                     
-                                    Text(history.timestamp.formatted(date: .long, time: .shortened))
-                                        .font(.caption)
-                                        .foregroundStyle(Color(UIColor.systemGray))
+                                    Section {
+                                        Section {
+                                            Image(systemName: history.type == "Organic" ? "leaf.fill" : (history.type == "Inorganic" ? "arrow.3.trianglepath" : "questionmark.app.fill") )
+                                            Text(history.type)
+                                        }
+                                            .font(.title2)
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(history.type == "Organic" ? Color(UIColor.systemGreen) : (history.type == "Inorganic" ? Color(UIColor.systemBlue) : Color(UIColor.systemGray)))
+
+                                        Text("Confidence: \(history.confidence, format: .number.precision(.fractionLength(2)))%")
+                                            .font(.footnote)
+                                            .padding(.bottom, 12)
+                                            .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                        
+                                        Text(history.timestamp.formatted(date: .long, time: .shortened))
+                                            .font(.caption)
+                                            .foregroundStyle(Color(UIColor.systemGray))
+                                    }
+                                        .padding(.horizontal, 12)
                                 }
-                                    .padding(.horizontal, 12)
+                                    .padding(.bottom, 16)
+                                    .background(Color(UIColor.systemBackground))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16.0))
                             }
-                                .padding(.bottom, 16)
-                                .background(Color(UIColor.systemBackground))
-                                .clipShape(RoundedRectangle(cornerRadius: 16.0))
                         }
+                            .padding(.vertical, 4)
                     }
-                        .padding(.vertical, 4)
                 }
             }
                 .padding(.horizontal, 12)

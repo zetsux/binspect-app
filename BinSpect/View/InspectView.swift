@@ -17,7 +17,6 @@ struct InspectView: View {
     @State private var selectedItem: PhotosPickerItem?
     @State var image: UIImage?
     @State var hasImage = false
-    @State var model: TrashNBClassifier2?
 
     var body: some View {
         NavigationStack {
@@ -75,20 +74,13 @@ struct InspectView: View {
                 }
                 .navigationTitle("Inspect")
                 .navigationDestination(isPresented: $hasImage) {
-                    if let image, let model {
-                        ResultsView(image: image, trashClassifier: model)
+                    if let image {
+                        ResultsView(image: image)
                     }
                 }
         }
         .task {
-            do {
-                if model == nil {
-                    let config = MLModelConfiguration()
-                    model = try TrashNBClassifier2(configuration: config)
-                }
-            } catch {
-                print("Failed to load the model request")
-            }
+            ModelClassifierLoader.loadModel()
         }
     }
 }
